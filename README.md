@@ -1,4 +1,4 @@
-# ALCF docker
+# ALCF container
 
 Containerized Automatic Lidar and Ceilometer Processing Framework (ALCF) 1.1.0. For more information, check https://github.com/alcf-lidar/alcf. 
 
