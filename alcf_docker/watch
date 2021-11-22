@@ -1,0 +1,3 @@
+#!/bin/sh
+python3 setup.py install --user
+while inotifywait -re close_write .; do python3 setup.py install --user; done
