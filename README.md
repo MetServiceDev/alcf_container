@@ -55,3 +55,4 @@ The following sites are available for getting ceilometer data.
 | NZWNA |       |
 | NZWRA |       |
 
+## Remove noises
