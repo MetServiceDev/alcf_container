@@ -73,6 +73,7 @@ def run_alcf(sid: str, dt: datetime):
         volumes=[
             "/tmp:/tmp",
         ],
+        remove=True,
     )
 
     img_raw = os.path.join(LOCAL_TEMP_FOLDER, f"{dt:%Y-%m-%d}T000000.png")
@@ -129,6 +130,3 @@ if __name__ == "__main__":
     # For test only
     # for iday in tqdm.tqdm(range(1, 23)):
     #     run_alcf("NZWRA", datetime(2021, 11, iday))
-
-    # # Clean up
-    # client.containers.prune()
