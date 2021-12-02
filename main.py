@@ -68,7 +68,7 @@ def run_alcf(sid: str, dt: datetime):
     ceilometer_data = copy_ceilometer_data(sid, dt)
 
     client.containers.run(
-        image="alcf:1.1.0",
+        image="alcf:1.1.2",
         command=f"{ceilometer_data} /tmp",
         volumes=[
             "/tmp:/tmp",
@@ -82,7 +82,7 @@ def run_alcf(sid: str, dt: datetime):
     shutil.copy(img_raw, img_new)
 
     # Archive data on s3
-    archive_data_on_s3(sid, img_new)
+    # archive_data_on_s3(sid, img_new)
 
 
 def parse_arguments():
