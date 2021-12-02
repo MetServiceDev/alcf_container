@@ -1,20 +1,20 @@
 # ALCF container
 
-Containerized Automatic Lidar and Ceilometer Processing Framework (ALCF) 1.1.0. For more information, check https://github.com/alcf-lidar/alcf. 
+Containerized Automatic Lidar and Ceilometer Processing Framework (ALCF) latest version (1.1.2). For more information, check https://github.com/alcf-lidar/alcf.
 
 [TOC]
 
 ## Prerequisite
 
-+ Docker
-+ Python
-  + boto3, docker, fr_helpers
-+ MS share mounted
+- Docker
+- Python
+  - boto3, docker, fr_helpers
+- MS share mounted
 
 ## Build docker image
 
 ```bash
-docker build . --tag alcf:1.1.0
+docker build . --tag alcf:1.1.2
 ```
 
 ## Run ALCF
@@ -23,7 +23,7 @@ docker build . --tag alcf:1.1.0
 python main.py -sid NZNPA -dt 2021-11-22
 ```
 
-The results can be found in */tmp/lidar*, */tmp/plot*, and */tmp/stats* folder. The backscatter plot also can be found in the given s3 place.
+The result image can be found in both _/tmp_ and _/home/yzhan/ceilometer_ folders.
 
 Note that the following CONST will need to be updated according to the system settings:
 
@@ -35,24 +35,27 @@ Note that the following CONST will need to be updated according to the system se
 
 ## Supported ceilometer sites
 
-The following sites are available for getting ceilometer data.
+The following 16 sites are available for getting ceilometer data.
 
-| Name  | Notes |
-| ----- | ----- |
-| NZAAA |       |
-| NZAPA |       |
-| NZCHA |       |
-| NZDNA |       |
-| NZGSA |       |
-| NZHNA |       |
-| NZNPA |       |
-| NZNRA |       |
-| NZOHA |       |
-| NZQHA |       |
-| NZROA |       |
-| NZTGA |       |
-| NZWKA |       |
-| NZWNA |       |
-| NZWRA |       |
+| Name  | Notes             |
+| ----- | ----------------- |
+| NZAAA | Auckland Aero A   |
+| NZAPA | Taupo Aero        |
+| NZCHA | Christchurch Aero |
+| NZDNA | Dunedin Aero      |
+| NZGSA | Gisborne Aero     |
+| NZHNA | Hamilton Aero     |
+| NZNPA | New Plymouth Aero |
+| NZNRA | Napier Aero       |
+| NZNVA | Invercargill Aero |
+| NZOHA | Ohakea Aero       |
+| NZQNA | Queenstown Aero   |
+| NZROA | Rotorua Aero      |
+| NZTGA | Tauranga Aero     |
+| NZWKA | Whakatane Aero    |
+| NZWNA | Wellington Aero A |
+| NZWRA | Whangarei Aero    |
 
 ## Remove noises
+
+The noises in the original backscattering plot is removed by specifying the σ in the plot function to 8.
