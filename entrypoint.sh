@@ -1,5 +1,6 @@
 #!/bin/bash
 
-alcf convert cl51 $1 /tmp/test.nc
-alcf auto lidar cl51 /tmp/test.nc /tmp/
-cp /tmp/plot/backscatter/*.png $2
+alcf convert cl51 $1 temp.nc
+alcf lidar cl31 temp.nc lidar/
+alcf plot backscatter lidar/ plot/ cloud_mask: false sigma: 8
+cp plot/*.png /tmp

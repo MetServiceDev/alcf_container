@@ -68,11 +68,12 @@ def run_alcf(sid: str, dt: datetime):
     ceilometer_data = copy_ceilometer_data(sid, dt)
 
     client.containers.run(
-        image="alcf:1.1.0",
+        image="alcf:1.1.2",
         command=f"{ceilometer_data} /tmp",
         volumes=[
             "/tmp:/tmp",
         ],
+        remove=True,
     )
 
     img_raw = os.path.join(LOCAL_TEMP_FOLDER, f"{dt:%Y-%m-%d}T000000.png")
@@ -81,7 +82,7 @@ def run_alcf(sid: str, dt: datetime):
     shutil.copy(img_raw, img_new)
 
     # Archive data on s3
-    archive_data_on_s3(sid, img_new)
+    # archive_data_on_s3(sid, img_new)
 
 
 def parse_arguments():
@@ -129,6 +130,3 @@ if __name__ == "__main__":
     # For test only
     # for iday in tqdm.tqdm(range(1, 23)):
     #     run_alcf("NZWRA", datetime(2021, 11, iday))
-
-    # # Clean up
-    # client.containers.prune()
