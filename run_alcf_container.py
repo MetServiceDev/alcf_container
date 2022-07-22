@@ -4,6 +4,7 @@
 3. (optional) Save outputs on s3.
 """
 
+from common import get_loggers
 from argparse import ArgumentParser
 from datetime import datetime
 from fr_helpers import aws
@@ -12,19 +13,24 @@ import shutil
 import boto3
 import docker
 
-boto3.setup_default_session(profile_name="research-normaluser")
+# Logging
+logger = get_loggers("INFO")
+
+# AWS service
+boto3.setup_default_session(profile_name="default")
 S3_RESOURCE = boto3.resource("s3")
 client = docker.from_env()
 
-
-MS_SHARE_FOLDER = (
-    "/mnt/storm/Ops_Data/Ceilometer_Backscatter_Data/Wellington_Forecast_Centre"
-)
+# Folder settings
+MS_SHARE_FOLDER = "/mnt/thunder/Ops_Data/Ceilometer_Backscatter_Data/"
 LOCAL_TEMP_FOLDER = "/tmp"
-LOCAL_ARCHIVE_FOLDER = "/home/yzhan/ceilometer"
+LOCAL_ARCHIVE_FOLDER = "/home/yzhan/temp/ceilometer"
 S3_ARCHIVE_FOLDER = (
     "s3://metservice-research-us-west-2/research/experiments/yizhe/ceilometers"
 )
+
+# Docker container
+alcf_docker = "alcf:1.1.4"
 
 
 def copy_ceilometer_data(sid: str, dt: datetime):
@@ -34,7 +40,7 @@ def copy_ceilometer_data(sid: str, dt: datetime):
         sid (str): station ID
         dt (datetime): datetime of ceilometer data
     """
-    raw_file = f"{sid}/A1{dt:%m%d}00.DAT"
+    raw_file = f"{sid}/A2{dt:%m%d}00.DAT"
     raw_file_path = os.path.join(MS_SHARE_FOLDER, raw_file)
     if os.path.exists(raw_file_path) == False:
         print(f"Cannot find ceilometer data at datetime {dt:%m%d} at station {sid}")
@@ -65,10 +71,13 @@ def run_alcf(sid: str, dt: datetime):
         sid (str): station ID
         dt (datetime): datetime of ceilometer data
     """
+
+    logger.info("Fetch ceilometer data from thunder server.")
     ceilometer_data = copy_ceilometer_data(sid, dt)
 
+    logger.info("Run ALCF container.")
     client.containers.run(
-        image="alcf:1.1.2",
+        image=alcf_docker,
         command=f"{ceilometer_data} /tmp",
         volumes=[
             "/tmp:/tmp",
@@ -79,8 +88,19 @@ def run_alcf(sid: str, dt: datetime):
     img_raw = os.path.join(LOCAL_TEMP_FOLDER, f"{dt:%Y-%m-%d}T000000.png")
     img_new = os.path.join(LOCAL_ARCHIVE_FOLDER, f"{sid}_{dt:%Y-%m-%d}T000000.png")
 
+    logger.info(f"Save figure to {LOCAL_ARCHIVE_FOLDER}")
     shutil.copy(img_raw, img_new)
 
+    data_raw = os.path.join(LOCAL_TEMP_FOLDER, f"{dt:%Y-%m-%d}T000000.nc")
+    data_new = os.path.join(LOCAL_ARCHIVE_FOLDER, f"{sid}_{dt:%Y-%m-%d}T000000.nc")
+
+    logger.info(f"Save output to {LOCAL_ARCHIVE_FOLDER}")
+    shutil.copy(data_raw, data_new)
+
+    logger.info("Clean tmp folder")
+    os.remove(img_raw)
+    os.remove(data_raw)
+    os.remove(ceilometer_data)
     # Archive data on s3
     # archive_data_on_s3(sid, img_new)
 
