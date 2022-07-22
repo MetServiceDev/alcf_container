@@ -2,7 +2,8 @@ FROM ubuntu:20.04 AS base
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
-ENV TZ=Asia/Dubai
+# ENV TZ=Asia/Dubai
+ENV TZ=UTC
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -y gcc make gfortran libhdf5-dev libnetcdf-dev \
