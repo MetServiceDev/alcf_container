@@ -7,17 +7,33 @@ Containerized Automatic Lidar and Ceilometer Processing Framework (ALCF) latest 
 ## Prerequisite
 
 - Docker
-- Python
+- (Optional) Python
   - boto3, docker, fr_helpers
-- MS share mounted
+- (Optional) MS share mounted
 
 ## Build docker image
 
 ```bash
-docker build . --tag alcf:1.1.2
+docker build . --tag alcf:1.5.2
 ```
 
 ## Run ALCF
+
+There are two ways of running ALCF docker container,
+
+### Run ALCF container directly
+
+This approach is mainly used for testing.
+
+```bash
+# Launch an interactive ALCF container
+# The following cmd replace the original entrypoint with /bin/bash and mount two local folders (data and plot) inside the container
+docker run -it --rm --entrypoint /bin/bash -v ./test:/root/data -v ./plot:/root/plot alcf:1.5.2 data/A1072700.DAT
+```
+
+### Run ALCF contaienr using python wrapper
+
+This approach can be used for batch jobs,
 
 ```python
 python main.py -sid NZNPA -dt 2021-11-22

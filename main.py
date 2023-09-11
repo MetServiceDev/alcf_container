@@ -11,20 +11,21 @@ import os
 import shutil
 import boto3
 import docker
+import configparser as cfp
 
+# Set up ENV
 boto3.setup_default_session(profile_name="research-normaluser")
 S3_RESOURCE = boto3.resource("s3")
 client = docker.from_env()
 
-
-MS_SHARE_FOLDER = (
-    "/mnt/storm/Ops_Data/Ceilometer_Backscatter_Data/Wellington_Forecast_Centre"
-)
-LOCAL_TEMP_FOLDER = "/tmp"
-LOCAL_ARCHIVE_FOLDER = "/home/yzhan/ceilometer"
-S3_ARCHIVE_FOLDER = (
-    "s3://metservice-research-us-west-2/research/experiments/yizhe/ceilometers"
-)
+# Load configs
+config = cfp.ConfigParser()
+config.read("./default.cfg")
+MS_SHARE_FOLDER = config["Local"]["MS_SHARE_FOLDER"]
+LOCAL_TEMP_FOLDER = config["Local"]["LOCAL_TEMP_FOLDER"]
+LOCAL_ARCHIVE_FOLDER = config["Local"]["LOCAL_ARCHIVE_FOLDER"]
+S3_ARCHIVE_FOLDER = config["Remote"]["S3_ARCHIVE_FOLDER"]
+ALCF_IMAGE = config["Docker"]["IMG"]
 
 
 def copy_ceilometer_data(sid: str, dt: datetime):
@@ -68,7 +69,7 @@ def run_alcf(sid: str, dt: datetime):
     ceilometer_data = copy_ceilometer_data(sid, dt)
 
     client.containers.run(
-        image="alcf:1.1.2",
+        image=ALCF_IMAGE,
         command=f"{ceilometer_data} /tmp",
         volumes=[
             "/tmp:/tmp",
