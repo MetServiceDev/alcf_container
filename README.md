@@ -28,7 +28,7 @@ This approach is mainly used for testing.
 ```bash
 # Launch an interactive ALCF container
 # The following cmd replace the original entrypoint with /bin/bash and mount two local folders (data and plot) inside the container
-docker run -it --rm --entrypoint /bin/bash -v ./test:/root/data -v ./plot:/root/plot alcf:1.5.2 data/A1072700.DAT
+docker run -it --rm --entrypoint /bin/bash -v /home/yzhan/gits/alcf_container/test:/root/data -v /tmp:/root/plot alcf:1.5.2
 ```
 
 ### Run ALCF contaienr using python wrapper
